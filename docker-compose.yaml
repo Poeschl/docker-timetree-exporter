@@ -1,0 +1,23 @@
+services:
+
+  timetree-exporter:
+    image: ghcr.io/poeschl/timetree-exporter:latest
+    volumes:
+      - transfer:/data
+    environment:
+      TIMETREE_EMAIL: "" # The email address of the TimeTree account you want to export
+      TIMETREE_PASSWORD: "" # The password of the TimeTree account you want to export
+      TIMETREE_CALENDER_CODE: "" # The calendar code of the calendar you want to export.
+                                 # you can find it in the URL of the calendar (e.g. https://timetreeapp.com/calendars/vSREf7pxLbwE)
+
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - transfer:/usr/share/nginx/html:ro
+    depends_on:
+      - timetree-exporter
+
+volumes:
+  transfer:

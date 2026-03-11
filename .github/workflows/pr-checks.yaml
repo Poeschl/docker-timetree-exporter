@@ -1,0 +1,58 @@
+name: PR Checks
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+      - reopened
+    branches:
+      - main
+
+jobs:
+  pre-commit:
+    name: Check repository with pre-commit
+    runs-on: ubuntu-latest
+    steps:
+      - name: ↩️ Checkout
+        uses: actions/checkout@v6
+        with:
+          lfs: true
+
+      - name: 🏗️ Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+
+      - name: 🔍️ Execute pre-commit on all files
+        uses: pre-commit/action@v3.0.1
+
+  test-build:
+    name: Working build
+    runs-on: ubuntu-latest
+    steps:
+      - name: ↩️ Checkout
+        uses: actions/checkout@v6
+
+      - name: ℹ️ Generate OCI meta info
+        id: docker_meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ghcr.io/poeschl/docker-timetree-exporter
+          tags: dev
+
+      - name: 🏗️ Install qemu dependency
+        uses: docker/setup-qemu-action@v3
+
+      - name: ⚙️ Build Image
+        id: build-image
+        uses: redhat-actions/buildah-build@v2
+        with:
+          containerfiles: Dockerfile
+          context: timetree-exporter
+          tags: ${{ steps.docker-meta.outputs.tags }}
+          labels: ${{ steps.docker-meta.outputs.labels }}
+          platforms: linux/amd64,linux/arm64
+          build-args: |
+            TARGETARCH
+          # Disable layer caching
+          layers: false
