@@ -15,6 +15,8 @@ I use this to get the events from TimeTree and integrate it into my NextCloud ca
 3. Run `podman compose up -d` to start the stack (or use you container engine).
 4. Access the exported calendar at `http://localhost:8080/timetree_export.ical`. (The calendar file will be updated every 3 hours.)
 
+> Make sure to avaid the '$' letter in the password, as it will cause issues with the environment variable parsing. You can use a different character or escape it properly.
+
 ### Custom calender file update interval
 
 To change the update interval of the calendar file (defaults to every hour), the crontab file of the timetree-exporter container can be edited.
