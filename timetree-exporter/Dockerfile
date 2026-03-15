@@ -13,7 +13,8 @@ COPY crontab /etc/crontab
 RUN pip install --no-cache-dir timetree-exporter
 
 COPY execute-exporter.sh /usr/local/bin/execute-exporter.sh
-RUN chmod +x /usr/local/bin/execute-exporter.sh
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/execute-exporter.sh /usr/local/bin/entrypoint.sh
 
 
-ENTRYPOINT ["supercronic", "/etc/crontab"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
