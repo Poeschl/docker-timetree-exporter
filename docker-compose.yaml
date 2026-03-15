@@ -1,7 +1,7 @@
 services:
 
   timetree-exporter:
-    image: ghcr.io/poeschl/timetree-exporter:latest
+    image: ghcr.io/poeschl/docker-timetree-exporter:latest
     volumes:
       - transfer:/data
     environment:
